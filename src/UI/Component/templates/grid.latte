@@ -1,0 +1,24 @@
+{var $startRow = $row ? $row->startTag()}
+{var $endRow = $row ? $row->endTag()}
+
+{var $startColumn = $column ? $column->startTag()}
+{var $endColumn = $column ? $column->endTag()}
+
+{foreach $controls as $ctrl}
+	{if $calculate && $iterator->isFirst()}
+		{$startRow|noescape}
+	{/if}
+
+	{$startColumn|noescape}
+	{control $ctrl}
+	{$endColumn|noescape}
+
+	{if $calculate}
+		{if $iterator->isLast()}
+			{$endRow|noescape}
+		{elseif $iterator->getCounter() % $number === 0}
+			{$endRow|noescape}
+			{$startRow|noescape}
+		{/if}
+	{/if}
+{/foreach}
