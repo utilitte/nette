@@ -8,6 +8,8 @@ use Nette\DI\CompilerExtension;
 use Nette\Schema\Expect;
 use Nette\Schema\Schema;
 use Utilitte\Doctrine\DoctrineIdentityExtractor;
+use Utilitte\Doctrine\Query\RawQueryFactory;
+use Utilitte\Doctrine\QueryMetadataExtractor;
 use Utilitte\Nette\Latte\Macros;
 use Utilitte\Nette\UI\FlexibleMultiplierByIdentifierFactory;
 
@@ -36,6 +38,12 @@ final class UtilityExtension extends CompilerExtension
 		if (interface_exists(EntityManagerInterface::class) && class_exists(DoctrineIdentityExtractor::class)) {
 			$builder->addDefinition($this->prefix('doctrine.identityExtractor'))
 				->setType(DoctrineIdentityExtractor::class);
+
+			$builder->addDefinition($this->prefix('doctrine.queryMetadataExtractor'))
+				->setType(QueryMetadataExtractor::class);
+
+			$builder->addDefinition($this->prefix('doctrine.rawQueryFactory'))
+				->setType(RawQueryFactory::class);
 		}
 	}
 
