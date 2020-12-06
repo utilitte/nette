@@ -24,6 +24,8 @@ final class GridComponent extends Control
 	 */
 	private ?Html $column = null;
 
+	private ?string $incrementSequencePrefix = null;
+
 	private int $columnNumber = 1;
 
 	public function __construct(Component $component)
@@ -42,14 +44,25 @@ final class GridComponent extends Control
 	/**
 	 * @phpstan-param Html<int, Html|string>|null $column
 	 */
-	public function setColumn(?Html $column): void
+	public function setColumn(?Html $column): self
 	{
 		$this->column = $column;
+
+		return $this;
 	}
 
-	public function setColumnNumber(int $columnNumber): void
+	public function setColumnNumber(int $columnNumber): self
 	{
 		$this->columnNumber = max(1, $columnNumber);
+
+		return $this;
+	}
+
+	public function setIncrementSequence(string $prefix): self
+	{
+		$this->incrementSequencePrefix = $prefix;
+
+		return $this;
 	}
 
 	public function render(): void
@@ -60,17 +73,54 @@ final class GridComponent extends Control
 		assert($component instanceof Component);
 		assert($template instanceof Template);
 
-		$controls = iterator_to_array($component->getComponents(true, IRenderable::class));
+		$controls = iterator_to_array($component->getComponents(false, IRenderable::class));
 
 		if (!$controls) {
 			return;
 		}
 
+		// column functions
+		$template->getLatte()->addFunction('startColumn', function (int $counter): ?string {
+			if (!$this->column) {
+				return null;
+			}
+
+			$col = $this->column;
+			if ($this->incrementSequencePrefix) {
+				$col = clone $this->column;
+				$col->appendAttribute('class', $this->incrementSequencePrefix . $counter);
+			}
+
+			return $col->startTag();
+		});
+		$template->getLatte()->addFunction('endColumn', function (): ?string {
+			if (!$this->column) {
+				return null;
+			}
+
+			return $this->column->endTag();
+		});
+
+		// row functions
+		$template->getLatte()->addFunction('startRow', function (int $counter): ?string {
+			if (!$this->row) {
+				return null;
+			}
+
+			return $this->row->startTag();
+		});
+		$template->getLatte()->addFunction('endRow', function (): ?string {
+			if (!$this->row) {
+				return null;
+			}
+
+			return $this->row->endTag();
+		});
+
+
 		$template->render(__DIR__ . '/templates/grid.latte', [
 			'controls' => $controls,
 			'calculate' => (bool) $this->row,
-			'row' => $this->row,
-			'column' => $this->column,
 			'number' => $this->columnNumber,
 		]);
 	}
