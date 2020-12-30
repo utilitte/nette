@@ -2,9 +2,11 @@
 
 namespace Utilitte\Nette\UI\Component;
 
+use InvalidArgumentException;
 use Nette\Application\UI\Component;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\IRenderable;
+use Nette\Application\UI\Multiplier;
 use Nette\Bridges\ApplicationLatte\Template;
 use Nette\Utils\Html;
 use function assert;
@@ -28,17 +30,30 @@ final class GridComponent extends Control
 
 	private int $columnNumber = 1;
 
+	/** @var mixed[] */
+	private array $prepends = [];
+
+	/** @var Component[] */
+	private array $prependsById = [];
+
 	public function __construct(Component $component)
 	{
 		$this->component = $component;
 	}
 
+	public static function create(Component $component): self
+	{
+		return new static($component);
+	}
+
 	/**
 	 * @phpstan-param Html<int, Html|string>|null $row
 	 */
-	public function setRow(?Html $row): void
+	public function setRow(?Html $row): self
 	{
 		$this->row = $row;
+
+		return $this;
 	}
 
 	/**
@@ -65,6 +80,14 @@ final class GridComponent extends Control
 		return $this;
 	}
 
+	public function addComponentAtPosition(string $id, int $position, Component $control): self
+	{
+		$this->prependsById[$id] = $control;
+		$this->prepends[$position][] = $id;
+
+		return $this;
+	}
+
 	public function render(): void
 	{
 		$component = $this['grid'];
@@ -86,6 +109,7 @@ final class GridComponent extends Control
 			}
 
 			$col = $this->column;
+
 			if ($this->incrementSequencePrefix) {
 				$col = clone $this->column;
 				$col->appendAttribute('class', $this->incrementSequencePrefix . $counter);
@@ -117,6 +141,7 @@ final class GridComponent extends Control
 			return $this->row->endTag();
 		});
 
+		$controls = $this->mergePrepends($controls);
 
 		$template->render(__DIR__ . '/templates/grid.latte', [
 			'controls' => $controls,
@@ -128,6 +153,46 @@ final class GridComponent extends Control
 	protected function createComponentGrid(): Component
 	{
 		return $this->component;
+	}
+
+	protected function createComponentPrepend(): Component
+	{
+		return new Multiplier(function (string $index) {
+			if (!isset($this->prependsById[$index])) {
+				throw new InvalidArgumentException(sprintf('Prepended component %d not exists', $index));
+			}
+
+			return $this->prependsById[$index];
+		});
+	}
+
+	/**
+	 * @param Component[] $controls
+	 * @return Component[]
+	 */
+	private function mergePrepends(array $controls): array
+	{
+		if (!$this->prepends) {
+			return $controls;
+		}
+
+		$return = [];
+
+		$position = 1;
+
+		foreach ($controls as $control) {
+			if (isset($this->prepends[$position])) {
+				foreach ($this->prepends[$position] as $id) {
+					$return[] = $this->getComponent(sprintf('prepend-%s', $id));
+				}
+			}
+
+			$return[] = $control;
+
+			$position++;
+		}
+
+		return $return;
 	}
 
 }

@@ -1,17 +1,21 @@
-
 {foreach $controls as $ctrl}
+	{var $counter = $iterator->getCounter()}
+
+	{* Row *}
 	{if $calculate && $iterator->isFirst()}
 		{startRow()|noescape}
 	{/if}
 
-	{startColumn($iterator->getCounter())|noescape}
+	{* Column *}
+	{startColumn($counter)|noescape}
 	{control $ctrl}
 	{endColumn()|noescape}
 
+	{* Row *}
 	{if $calculate}
 		{if $iterator->isLast()}
 			{endRow()|noescape}
-		{elseif $iterator->getCounter() % $number === 0}
+		{elseif $counter % $number === 0}
 			{endRow()|noescape}
 			{startRow()|noescape}
 		{/if}
