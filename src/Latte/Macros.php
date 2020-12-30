@@ -27,7 +27,7 @@ final class Macros extends MacroSet
 
 		$word = $words[0] ?? $this->options['confirmMessage'];
 
-		$var = strpos($word, '$') !== false ? "' . %escape(%raw) . '" : "' . %escape(%word) . '";
+		$var = strpos($word, '$') !== false ? "' . %escape(%raw) . '" : "' . %escape('%word') . '";
 
 		return $writer->write(
 			'echo \'data-confirm="' . $var . '" onclick="return confirm(\\\'' . $var . '\\\')"\'',
