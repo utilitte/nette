@@ -8,6 +8,7 @@ use Nette\DI\CompilerExtension;
 use Nette\Schema\Expect;
 use Nette\Schema\Schema;
 use Utilitte\Doctrine\DoctrineIdentityExtractor;
+use Utilitte\Doctrine\FetchByIdentifiers;
 use Utilitte\Doctrine\Query\RawQueryFactory;
 use Utilitte\Doctrine\QueryMetadataExtractor;
 use Utilitte\Nette\Latte\Macros;
@@ -44,6 +45,9 @@ final class UtilityExtension extends CompilerExtension
 
 			$builder->addDefinition($this->prefix('doctrine.rawQueryFactory'))
 				->setType(RawQueryFactory::class);
+
+			$builder->addDefinition($this->prefix('doctrine.fetchByIdentifiers'))
+				->setType(FetchByIdentifiers::class);
 		}
 	}
 
