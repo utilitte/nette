@@ -8,7 +8,7 @@ use Utilitte\Nette\Utility\FormUtility as FormUtil;
 trait FormUtility
 {
 
-	final private function createFormUtility(Form $form): FormUtil
+	private function createFormUtility(Form $form): FormUtil
 	{
 		return new FormUtil($this, $form);
 	}
