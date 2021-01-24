@@ -27,16 +27,21 @@ class FlexibleMultiplier extends Component implements MultiplierInterface
 	}
 
 	/**
-	 * @param mixed $entity
+	 * @param object $entityOrComponent
 	 * @param string|int $name
 	 */
-	public function add($entity, $name): IComponent
+	public function add($entityOrComponent, $name): IComponent
 	{
 		if (empty($name) && $name !== 0) {
 			throw new InvalidArgumentException('Argument $name must not be an empty');
 		}
 
-		$this->addComponent($component = ($this->factory)($entity), (string) $name);
+		$component = $entityOrComponent;
+		if (!$component instanceof Component) {
+			$component = ($this->factory)($entityOrComponent);
+		}
+
+		$this->addComponent($component, (string) $name);
 
 		return $this->static[] = $component;
 	}
