@@ -4,6 +4,7 @@ namespace Utilitte\Nette\UI;
 
 use Doctrine\ORM\EntityManagerInterface;
 use InvalidArgumentException;
+use Utilitte\Nette\Utility\ComponentNameBase64;
 use Utilitte\Php\Objects;
 
 final class FlexibleMultiplierByIdentifierFactory
@@ -14,6 +15,32 @@ final class FlexibleMultiplierByIdentifierFactory
 	public function __construct(EntityManagerInterface $em)
 	{
 		$this->em = $em;
+	}
+
+	public function createWithCallback(string $entity, callable $factory, callable $callback, iterable $static = []): FlexibleMultiplier
+	{
+		$multiplier = new FlexibleMultiplier(fn (string $id) => $this->em->getRepository($entity)->find($id), $factory);
+		$callback($multiplier);
+
+		if ($static) {
+			$this->addComponents($entity, $multiplier, $static);
+		}
+
+		return $multiplier;
+	}
+
+	public function createBase64WithCallback(string $entity, callable $factory, callable $callback, iterable $static = []): FlexibleMultiplier
+	{
+		$multiplier = new FlexibleMultiplier(
+			fn (string $id) => $this->em->getRepository($entity)->find(ComponentNameBase64::decode($id)), $factory
+		);
+		$callback($multiplier);
+
+		if ($static) {
+			$this->addComponents($entity, $multiplier, $static, true);
+		}
+
+		return $multiplier;
 	}
 
 	/**
@@ -36,7 +63,7 @@ final class FlexibleMultiplierByIdentifierFactory
 	/**
 	 * @param object[] $static
 	 */
-	private function addComponents(string $entity, FlexibleMultiplier $multiplier, iterable $static): void
+	private function addComponents(string $entity, FlexibleMultiplier $multiplier, iterable $static, bool $base64 = false): void
 	{
 		$metadata = $this->em->getClassMetadata($entity);
 
@@ -53,7 +80,8 @@ final class FlexibleMultiplierByIdentifierFactory
 				throw new InvalidArgumentException(sprintf('Entity %s must have exactly 1 identifier', $entity));
 			}
 
-			$multiplier->add($object, current($values));
+			$name = current($values);
+			$multiplier->add($object, $base64 ? ComponentNameBase64::encode($name) : $name);
 		}
 	}
 

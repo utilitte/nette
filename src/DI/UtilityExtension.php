@@ -11,8 +11,10 @@ use Utilitte\Doctrine\DoctrineIdentityExtractor;
 use Utilitte\Doctrine\FetchByIdentifiers;
 use Utilitte\Doctrine\Query\RawQueryFactory;
 use Utilitte\Doctrine\QueryMetadataExtractor;
+use Utilitte\Nette\Http\MaxUploadSize;
 use Utilitte\Nette\Latte\Macros;
 use Utilitte\Nette\UI\FlexibleMultiplierByIdentifierFactory;
+use Utilitte\Nette\UI\FlexibleTransferObjectMultiplier;
 
 final class UtilityExtension extends CompilerExtension
 {
@@ -33,8 +35,14 @@ final class UtilityExtension extends CompilerExtension
 	{
 		$builder = $this->getContainerBuilder();
 
+		$builder->addDefinition($this->prefix('image'))
+			->setFactory(MaxUploadSize::class);
+
 		$builder->addDefinition($this->prefix('flexibleMultiplier'))
 			->setFactory(FlexibleMultiplierByIdentifierFactory::class);
+
+		$builder->addDefinition($this->prefix('flexibleTransferObjectMultiplier'))
+			->setFactory(FlexibleTransferObjectMultiplier::class);
 
 		if (interface_exists(EntityManagerInterface::class) && class_exists(DoctrineIdentityExtractor::class)) {
 			$builder->addDefinition($this->prefix('doctrine.identityExtractor'))

@@ -1,3 +1,5 @@
+{$containerStart|noescape}
+
 {foreach $controls as $ctrl}
 	{var $counter = $iterator->getCounter()}
 
@@ -21,3 +23,5 @@
 		{/if}
 	{/if}
 {/foreach}
+
+{$containerEnd|noescape}

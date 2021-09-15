@@ -17,6 +17,12 @@ class FlexibleMultiplier extends Component implements MultiplierInterface
 	/** @var callable */
 	private $getter;
 
+	/** @var callable|null */
+	private $nameNormalizer = null;
+
+	/** @var callable|null */
+	private $nameDenormalizer = null;
+
 	/** @var IComponent[] */
 	private array $static = [];
 
@@ -41,7 +47,12 @@ class FlexibleMultiplier extends Component implements MultiplierInterface
 			$component = ($this->factory)($entityOrComponent);
 		}
 
-		$this->addComponent($component, (string) $name);
+		$name = (string) $name;
+		if ($this->nameNormalizer) {
+			$name = ($this->nameNormalizer)($name);
+		}
+
+		$this->addComponent($component, $name);
 
 		return $this->static[] = $component;
 	}
@@ -62,6 +73,12 @@ class FlexibleMultiplier extends Component implements MultiplierInterface
 		return $this->static;
 	}
 
+	public function setNameNormalizer(callable $nameNormalizer, callable $nameDenormalizer): void
+	{
+		$this->nameNormalizer = $nameNormalizer;
+		$this->nameDenormalizer = $nameDenormalizer;
+	}
+
 	public function getFirst(): IComponent
 	{
 		if (!$this->static) {
@@ -73,6 +90,10 @@ class FlexibleMultiplier extends Component implements MultiplierInterface
 
 	protected function createComponent(string $name): ?IComponent
 	{
+		if ($this->nameDenormalizer) {
+			$name = ($this->nameDenormalizer)($name);
+		}
+
 		$entity = ($this->getter)($name);
 
 		if ($entity === null) {

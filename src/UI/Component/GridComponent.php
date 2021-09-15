@@ -26,6 +26,11 @@ final class GridComponent extends Control
 	 */
 	private ?Html $column = null;
 
+	/**
+	 * @phpstan-var Html<int, Html|string>|null
+	 */
+	private ?Html $container = null;
+
 	private ?string $incrementSequencePrefix = null;
 
 	private int $columnNumber = 1;
@@ -52,6 +57,16 @@ final class GridComponent extends Control
 	public function setRow(?Html $row): self
 	{
 		$this->row = $row;
+
+		return $this;
+	}
+
+	/**
+	 * @phpstan-param Html<int, Html|string>|null $row
+	 */
+	public function setContainer(?Html $container): self
+	{
+		$this->container = $container;
 
 		return $this;
 	}
@@ -147,6 +162,8 @@ final class GridComponent extends Control
 			'controls' => $controls,
 			'calculate' => (bool) $this->row,
 			'number' => $this->columnNumber,
+			'containerStart' => $this->container?->startTag(),
+			'containerEnd' => $this->container?->endTag(),
 		]);
 	}
 
