@@ -33,6 +33,7 @@ trait LazyEntityGetter
 	/**
 	 * @template T
 	 * @param class-string<T> $class
+	 * @param mixed[] $checkParameters
 	 * @return T|null
 	 */
 	final protected function getEntityIfParameterPresented(string $class, string $parameterName = 'id', array $checkParameters = []): ?object
@@ -44,10 +45,15 @@ trait LazyEntityGetter
 		return $this->getEntity($class, $parameterName, $checkParameters);
 	}
 
+	/**
+	 * @template T
+	 * @param class-string<T> $class
+	 * @param mixed[] $checkParameters
+	 * @return T|null
+	 */
 	final protected function getNullableEntity(string $class, string $parameterName = 'id', array $checkParameters = []): ?object
 	{
 		if ($this->_entityMeta === null) {
-			$object = $this->getOptionalEntity($class, $parameterName, $checkParameters);
 			$id = $this->getParameter($parameterName);
 
 			if ($id === null) {
@@ -110,6 +116,7 @@ trait LazyEntityGetter
 	/**
 	 * @template T
 	 * @param class-string<T> $class
+	 * @param mixed[] $checkParameters
 	 * @return T
 	 */
 	final protected function getEntity(string $class, string $parameterName = 'id', array $checkParameters = []): object
