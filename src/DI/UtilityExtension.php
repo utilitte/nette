@@ -16,6 +16,7 @@ use Utilitte\Nette\Http\MaxUploadSize;
 use Utilitte\Nette\Latte\Macros;
 use Utilitte\Nette\UI\FlexibleMultiplierByIdentifierFactory;
 use Utilitte\Nette\UI\FlexibleTransferObjectMultiplier;
+use Utilitte\Nette\Utility\NetteDIUtility;
 
 final class UtilityExtension extends CompilerExtension
 {
@@ -69,9 +70,7 @@ final class UtilityExtension extends CompilerExtension
 		$config = $this->getConfig();
 
 		if ($config->latte->enable) {
-			$service = CompilerExtensionUtility::getFactoryDefinitionByType($builder, ILatteFactory::class);
-
-			$service->getResultDefinition()
+			NetteDIUtility::getLatteFactory($builder)->getResultDefinition()
 				->addSetup('?->onCompile[] = function ($engine) { ?::install($engine->getCompiler(), ?); }', [
 					'@self',
 					Macros::class,

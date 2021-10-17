@@ -2,11 +2,13 @@
 
 namespace Utilitte\Nette\DI;
 
+use JetBrains\PhpStorm\Deprecated;
 use Nette\DI\ContainerBuilder;
 use Nette\DI\Definitions\Definition;
 use Nette\DI\Definitions\FactoryDefinition;
 use Nette\DI\Definitions\ServiceDefinition;
 
+#[Deprecated('Use NetteDIStrict instead of')]
 final class CompilerExtensionUtility
 {
 
