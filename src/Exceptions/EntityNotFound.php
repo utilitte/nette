@@ -7,9 +7,12 @@ use Nette\Application\BadRequestException;
 class EntityNotFound extends BadRequestException
 {
 
-	public function __construct(string $class, string $identifier)
+	public function __construct(string $class, string|int|null $identifier)
 	{
-		parent::__construct(sprintf('Entity %s(%s) not found', $class, $identifier), 404);
+		parent::__construct(
+			sprintf('Entity %s(%s) not found.', $class, $identifier === null ? 'null' : (string) $identifier),
+			404
+		);
 	}
 
 }

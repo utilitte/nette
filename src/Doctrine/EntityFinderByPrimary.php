@@ -155,7 +155,7 @@ final class EntityFinderByPrimary
 		$object = $this->getNullableEntity($class);
 
 		if (!$object) {
-			throw new EntityNotFound($class, (string) $this->getParameterValue());
+			throw new EntityNotFound($class, $this->getParameterValue());
 		}
 
 		return $object;

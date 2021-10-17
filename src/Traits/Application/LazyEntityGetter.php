@@ -124,7 +124,7 @@ trait LazyEntityGetter
 		$object = $this->getNullableEntity($class, $parameterName, $checkParameters);
 
 		if (!$object) {
-			throw new EntityNotFound($class, $id);
+			throw new EntityNotFound($class, $this->getParameter($parameterName));
 		}
 
 		return $object;
