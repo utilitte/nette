@@ -18,6 +18,10 @@ final class NetteDIStrict
 	{
 		return Strict::instanceOf($builder->getDefinitionByType($type), ServiceDefinition::class);
 	}
+	public static function addServiceDefinition(ContainerBuilder $builder, string $name): ServiceDefinition
+	{
+		return Strict::instanceOf($builder->addDefinition($name), ServiceDefinition::class);
+	}
 
 	public static function getFactoryDefinitionByType(ContainerBuilder $builder, string $type): FactoryDefinition
 	{

@@ -81,7 +81,7 @@ final class EntityFinderByPrimary
 	}
 
 	/**
-	 * @template T
+	 * @template T of object
 	 * @param class-string<T> $class
 	 * @param mixed[] $checkParameters
 	 * @return T|null
@@ -96,7 +96,7 @@ final class EntityFinderByPrimary
 	}
 
 	/**
-	 * @template T
+	 * @template T of object
 	 * @param class-string<T> $class
 	 * @param mixed[] $checkParameters
 	 * @return T|null
@@ -145,7 +145,7 @@ final class EntityFinderByPrimary
 	}
 
 	/**
-	 * @template T
+	 * @template T of object
 	 * @param class-string<T> $class
 	 * @param mixed[] $checkParameters
 	 * @return T
