@@ -2,6 +2,8 @@
 
 namespace Utilitte\Nette\UI\Presenter;
 
+use Nette\Utils\Strings;
+
 trait PresenterCheckParametersTrait
 {
 
