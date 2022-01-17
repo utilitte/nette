@@ -62,6 +62,16 @@ final class EntityFinderByPrimary
 		return $this;
 	}
 
+	public function withParameterValue(string|int|null $parameterValue): self
+	{
+		$self = clone $this;
+		$self->parameterSet = true;
+		$self->parameterValue = $parameterValue;
+		$self->previous = null;
+
+		return $this;
+	}
+
 	public function setParameterName(string $parameterName): self
 	{
 		if ($this->parameterSet) {
@@ -71,6 +81,16 @@ final class EntityFinderByPrimary
 		$this->parameterName = $parameterName;
 
 		return $this;
+	}
+
+	public function withParameterName(string $parameterName): self
+	{
+		$self = clone $this;
+		$self->parameterName = $parameterName;
+		$self->parameterSet = false;
+		$self->previous = null;
+
+		return $self;
 	}
 
 	public function addValidator(callable $validator): self
