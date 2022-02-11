@@ -36,15 +36,35 @@ trait PresenterBackLinkTrait
 	{
 		$backlink = $this->getParameter($parameterName);
 
-		if ($backlink) {
-			$this->redirectUrlWithFlashKey($backlink);
+		if (!$backlink || !is_string($backlink)) {
+			return;
 		}
+
+		if (str_starts_with($backlink, '//')) {
+			return;
+		}
+
+		$url = new Url($backlink);
+
+		if (!$url->getAbsoluteUrl()) {
+			return;
+		}
+
+		if (!$url->getHostUrl()) {
+			if (!str_starts_with($url->getPath(), '/')) {
+				return;
+			}
+		} else if ($url->getHostUrl() !== $this->getHttpRequest()->getUrl()->getHostUrl()) {
+			return;
+		}
+
+		$this->redirectUrlWithFlashKey($url->getAbsoluteUrl());
 	}
 
 	/**
 	 * @return never
 	 */
-	public function redirectUrlWithFlashKey(string $url): void
+	private function redirectUrlWithFlashKey(string $url): void
 	{
 		$url = new Url($url);
 
