@@ -15,8 +15,15 @@ trait PresenterCheckParametersTrait
 		$redirect = false;
 
 		foreach ($values as $name => $value) {
-			if (!isset($parameters[$name]) || $parameters[$name] !== Strings::webalize((string) $value)) {
-				$parameters[$name] = Strings::webalize((string) $value);
+			$new = Strings::webalize((string) $value);
+
+			if (!isset($parameters[$name])) {
+				if ($new) {
+					$parameters[$name] = $new;
+					$redirect = true;
+				}
+			} else if ($parameters[$name] !== $new) {
+				$parameters[$name] = $new;
 				$redirect = true;
 			}
 		}
