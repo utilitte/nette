@@ -4,9 +4,7 @@ namespace Utilitte\Nette\Doctrine;
 
 use Doctrine\ORM\EntityManagerInterface;
 use LogicException;
-use Nette\Application\IPresenter;
-use Nette\Application\UI\Presenter;
-use Nette\Utils\Strings;
+use Nette\Application\UI\Component;
 use Utilitte\Nette\Exceptions\EntityIsNotValid;
 use Utilitte\Nette\Exceptions\EntityNotFound;
 use Utilitte\Nette\Exceptions\InvalidArgumentException;
@@ -20,7 +18,7 @@ final class EntityFinderByPrimary
 	/** @var array{parameter:mixed, class:string, object:object}|null */
 	private ?array $previous = null;
 
-	private Presenter $presenter;
+	private Component $component;
 
 	private string|int|null $parameterValue;
 
@@ -29,22 +27,18 @@ final class EntityFinderByPrimary
 	private string $parameterName = 'id';
 
 	public function __construct(
-		IPresenter $presenter,
+		Component $component,
 		private EntityManagerInterface $em,
 
 	)
 	{
-		if (!$presenter instanceof Presenter) {
-			throw new \InvalidArgumentException(sprintf('Supported only %s.', Presenter::class));
-		}
-
-		$this->presenter = $presenter;
+		$this->component = $component;
 	}
 
 	private function getParameterValue(): string|int|null
 	{
 		if (!$this->parameterSet) {
-			$this->parameterValue = $this->presenter->getParameter($this->parameterName);
+			$this->parameterValue = $this->component->getParameter($this->parameterName);
 		}
 
 		return $this->parameterValue;

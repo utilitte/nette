@@ -2,11 +2,11 @@
 
 namespace Utilitte\Nette\Doctrine;
 
-use Nette\Application\IPresenter;
+use Nette\Application\UI\Component;
 
 interface EntityFinderByPrimaryFactory
 {
 
-	public function create(IPresenter $presenter): EntityFinderByPrimary;
+	public function create(Component $component): EntityFinderByPrimary;
 
 }
