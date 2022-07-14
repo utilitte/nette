@@ -33,7 +33,7 @@ final class HrefMacros implements LatteMacroExtensionInterface
 	{
 		$presenterNode = substr($node->name, 0, 1) === 'p';
 
-		$node->modifiers = preg_replace('#\|safeurl\s*(?=\||\z)#i', '', $node->modifiers);
+		$node->modifiers = (string) preg_replace('#\|safeurl\s*(?=\||\z)#i', '', $node->modifiers);
 		return ' ?> href="<?php ' .
 			$writer->using($node)
 				->write(

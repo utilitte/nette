@@ -97,7 +97,6 @@ final class EntityFinderByPrimary
 	/**
 	 * @template T of object
 	 * @param class-string<T> $class
-	 * @param mixed[] $checkParameters
 	 * @return T|null
 	 */
 	public function getEntityIfParameterPresented(string $class): ?object
@@ -112,7 +111,6 @@ final class EntityFinderByPrimary
 	/**
 	 * @template T of object
 	 * @param class-string<T> $class
-	 * @param mixed[] $checkParameters
 	 * @return T|null
 	 */
 	public function getNullableEntity(string $class): ?object
@@ -155,13 +153,13 @@ final class EntityFinderByPrimary
 			);
 		}
 
+		/** @var T */
 		return $this->previous['object'];
 	}
 
 	/**
 	 * @template T of object
 	 * @param class-string<T> $class
-	 * @param mixed[] $checkParameters
 	 * @return T
 	 */
 	public function getEntity(string $class): object

@@ -7,7 +7,6 @@ use Latte\Compiler;
 use Latte\MacroNode;
 use Latte\Macros\MacroSet;
 use Latte\PhpWriter;
-use Utilitte\Php\Arrays;
 
 final class Macros extends MacroSet
 {
@@ -56,7 +55,7 @@ final class Macros extends MacroSet
 	public static function install(Compiler $compiler, array $options = []): void
 	{
 		$me = new static($compiler);
-		$me->options = Arrays::defaults($me->options, $options);
+		$me->options = array_merge($me->options, $options);
 
 		$me->addMacro('confirm', null, null, [$me, 'macroConfirm']);
 		$me->addMacro('phref', null, null, [$me, 'macroLink']);

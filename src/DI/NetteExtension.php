@@ -7,10 +7,13 @@ use Nette\Bridges\ApplicationLatte\LatteFactory;
 use Nette\DI\CompilerExtension;
 use Nette\DI\Definitions\FactoryDefinition;
 use Nette\DI\Definitions\ServiceDefinition;
+use Utilitte\Nette\Doctrine\EntityFinderByPrimaryFactory;
 use Utilitte\Nette\Interfaces\LatteEngineExtensionInterface;
 use Utilitte\Nette\Interfaces\LatteFilterLoaderExtensionInterface;
 use Utilitte\Nette\Interfaces\LatteMacroExtensionInterface;
 use Utilitte\Nette\Interfaces\LatteTemplateExtensionInterface;
+use Utilitte\Nette\UI\FlexibleMultiplierByIdentifierFactory;
+use Utilitte\Nette\UI\FlexibleTransferObjectMultiplier;
 
 final class NetteExtension extends CompilerExtension
 {
@@ -19,7 +22,9 @@ final class NetteExtension extends CompilerExtension
 	{
 		$builder = $this->getContainerBuilder();
 
-		$factory = CompilerExtensionUtility::assertFactoryDefinition($builder->getDefinitionByType(LatteFactory::class));
+		$factory = $builder->getDefinitionByType(LatteFactory::class);
+		assert($factory instanceof FactoryDefinition);
+
 		$result = $factory->getResultDefinition();
 
 		foreach ($builder->findByType(LatteEngineExtensionInterface::class) as $definition) {
@@ -34,11 +39,21 @@ final class NetteExtension extends CompilerExtension
 			$result->addSetup('?->onCompile[] = fn ($engine) => ?->install($engine->getCompiler());', ['@self', $definition]);
 		}
 
-		$factory = CompilerExtensionUtility::assertServiceDefinition($builder->getDefinitionByType(TemplateFactory::class));
+		$factory = $builder->getDefinitionByType(TemplateFactory::class);
+		assert($factory instanceof ServiceDefinition);
 
 		foreach ($builder->findByType(LatteTemplateExtensionInterface::class) as $definition) {
 			$factory->addSetup('?->onCreate[] = fn ($template) => ?->extendTemplate($template);', ['@self', $definition]);
 		}
+
+		$builder->addDefinition($this->prefix('flexibleMultiplier'))
+			->setFactory(FlexibleMultiplierByIdentifierFactory::class);
+
+		$builder->addDefinition($this->prefix('flexibleTransferObjectMultiplier'))
+			->setFactory(FlexibleTransferObjectMultiplier::class);
+
+		$builder->addFactoryDefinition($this->prefix('entityPresenterFinder'))
+			->setImplement(EntityFinderByPrimaryFactory::class);
 	}
 
 }
