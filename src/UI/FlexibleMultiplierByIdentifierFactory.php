@@ -4,8 +4,8 @@ namespace Utilitte\Nette\UI;
 
 use Doctrine\ORM\EntityManagerInterface;
 use InvalidArgumentException;
-use Utilitte\Asserts\Exceptions\AssertionFailedException;
-use Utilitte\Asserts\TypeAssert;
+use Typertion\Php\Exception\AssertionFailedException;
+use Typertion\Php\TypeAssert;
 use Utilitte\Nette\Utility\ComponentNameBase64;
 
 final class FlexibleMultiplierByIdentifierFactory
@@ -70,7 +70,7 @@ final class FlexibleMultiplierByIdentifierFactory
 
 		foreach ($static as $object) {
 			try {
-				TypeAssert::instance($object, $entity);
+				TypeAssert::instanceOf($object, $entity);
 			} catch (AssertionFailedException) {
 				throw new InvalidArgumentException(
 					sprintf('Entity %s must be instance of %s', get_class($object), $entity)
