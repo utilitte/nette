@@ -141,7 +141,7 @@ final class GridComponent extends Control
 		});
 
 		// row functions
-		$template->getLatte()->addFunction('startRow', function (int $counter): ?string {
+		$template->getLatte()->addFunction('startRow', function (): ?string {
 			if (!$this->row) {
 				return null;
 			}
