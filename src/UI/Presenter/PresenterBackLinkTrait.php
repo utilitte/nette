@@ -29,36 +29,45 @@ trait PresenterBackLinkTrait
 		$link->getComponent()->redirect($link->getDestination(), $link->getParameters());
 	}
 
-	/**
-	 * @param mixed[] $params
-	 */
-	public function tryRedirectBack(string $parameterName = 'backlink'): void
+	public function getBacklink(string $parameterName = 'backlink'): ?string
 	{
 		$backlink = $this->getParameter($parameterName);
 
 		if (!$backlink || !is_string($backlink)) {
-			return;
+			return null;
 		}
 
 		if (str_starts_with($backlink, '//')) {
-			return;
+			return null;
 		}
 
 		$url = new Url($backlink);
 
 		if (!$url->getAbsoluteUrl()) {
-			return;
+			return null;
 		}
 
 		if (!$url->getHostUrl()) {
 			if (!str_starts_with($url->getPath(), '/')) {
-				return;
+				return null;
 			}
 		} else if ($url->getHostUrl() !== $this->getHttpRequest()->getUrl()->getHostUrl()) {
-			return;
+			return null;
 		}
 
-		$this->redirectUrlWithFlashKey($url->getAbsoluteUrl());
+		return $url->getAbsoluteUrl();
+	}
+
+	/**
+	 * @param mixed[] $params
+	 */
+	public function tryRedirectBack(string $parameterName = 'backlink'): void
+	{
+		$backlink = $this->getBacklink($parameterName);
+
+		if ($backlink) {
+			$this->redirectUrlWithFlashKey($backlink);
+		}
 	}
 
 	/**
