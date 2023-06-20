@@ -4,6 +4,7 @@ namespace Utilitte\Nette\UI;
 
 use Doctrine\ORM\EntityManagerInterface;
 use Nette\Utils\Arrays;
+use Utilitte\Doctrine\Entity;
 
 final class DoctrineComponentMultiplierFactory
 {
@@ -24,7 +25,11 @@ final class DoctrineComponentMultiplierFactory
 		$static = [];
 
 		foreach ($entities as $entity) {
-			$static[Arrays::first($this->em->getClassMetadata($className)->getIdentifierValues($entity))] = $factory($entity);
+			if ($entity instanceof Entity) {
+				$static[$entity->getUniqueIdentity()->getId()] = $factory($entity);
+			} else {
+				$static[Arrays::first($this->em->getClassMetadata($className)->getIdentifierValues($entity))] = $factory($entity);
+			}
 		}
 
 		return new ComponentMultiplier(fn (string $id) => $this->em->find($className, $id), $factory, $static);
